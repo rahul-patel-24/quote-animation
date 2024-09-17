@@ -5,7 +5,11 @@ import './globals.css'; // Import global styles including Tailwind
 
 const queryClient = new QueryClient();
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
       <body>
