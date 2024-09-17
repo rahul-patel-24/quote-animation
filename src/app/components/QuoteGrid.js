@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 const fetchQuotes = async () => {
 
@@ -102,11 +102,9 @@ export default function QuoteGrid() {
                                     key={`quote-${quote.id}`} // Unique key for each quote
                                     className="p-2 bg-white rounded-lg shadow-md w-full flex-shrink-0"
                                 >
-                                    <Image
+                                    <img
                                         src={quote.image}
                                         alt={`Quote ${quote.id}`}
-                                        height={300}
-                                        width={200}
                                         className="w-full h-24 object-cover rounded-md"
                                     />
                                     <p className="mt-2 text-center text-sm">{quote.text}</p>
