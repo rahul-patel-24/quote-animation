@@ -127,7 +127,7 @@ export default function QuoteGrid() {
                                     />
                                 ))}
                             {columnQuotes.map((quote) => {
-                                const { width, height } = getRandomSize();
+                                const { height } = getRandomSize();
                                 return (
                                     <div
                                         key={`quote-${quote.id}`} // Unique key for each quote
