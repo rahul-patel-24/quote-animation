@@ -25,9 +25,9 @@ const ITEMS_TO_SHOW = Math.ceil(COLUMN_HEIGHT / ITEM_HEIGHT) + 1; // Number of i
 
 // Helper function for random size generation
 const getRandomSize = () => {
-    const randomWidth = Math.floor(Math.random() * (200 - 100 + 1)) + 300; // random width between 100 and 200px
+    // const randomWidth = Math.floor(Math.random() * (200 - 100 + 1)) + 300; // random width between 100 and 200px
     const randomHeight = Math.floor(Math.random() * (200 - 100 + 1)) + 300; // random height between 100 and 200px
-    return { width: randomWidth, height: randomHeight };
+    return {  height: randomHeight };
 };
 
 export default function QuoteGrid() {
