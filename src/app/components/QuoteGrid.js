@@ -99,7 +99,7 @@ export default function QuoteGrid() {
             </div>
 
             {/* Grid of 4 columns with infinite scrolling animation */}
-            <div className="pt-24 ml-40 mr-40  grid grid-cols-4 gap-4 p-4 relative overflow-hidden h-[700px]">
+            <div className="pt-24 ml-40 mr-40 grid grid-cols-4 gap-4 p-4 relative overflow-hidden h-[700px]">
                 {columns.map((columnQuotes, columnIndex) => (
                     <div
                         key={columnIndex} // Unique key for each column
@@ -108,7 +108,7 @@ export default function QuoteGrid() {
                     >
                         <motion.div
                             className="flex flex-col items-center justify-center content-center space-y-4"
-                            initial={{ y: columnIndex % 2 === 0 ? ['0%'] : [ '0%'] }} // Start fully off-screen
+                            // initial={{ y: columnIndex % 2 === 0 ? ['0%'] : [ '0%'] }} 
                             animate={{
                                 y: columnIndex % 2 === 0 ? ['-50%', '0%'] : ['0%', '-50%'],
                             }}
@@ -131,7 +131,7 @@ export default function QuoteGrid() {
                                 return (
                                     <div
                                         key={`quote-${quote.id}`} // Unique key for each quote
-                                        className="flex flex-col p-2  min-w-max max-w-max items-center bg-white rounded-lg shadow-md w-full flex-shrink-0"
+                                        className="flex flex-col p-2 min-w-max max-w-max items-center bg-white rounded-lg shadow-md w-full flex-shrink-0"
                                         style={{ height: `${height}px` }}
                                     >
                                         <img
