@@ -25,7 +25,7 @@ const QuoteEditor = () => {
   const [bgColor, setBgColor] = useState("#ffffff");
   const [borderStyle, setBorderStyle] = useState("solid");
   const [borderColor, setBorderColor] = useState("#000000");
-  const [borderWidth, setBorderWidth] = useState(2);
+  const [borderWidth] = useState(2);
   const [font, setFont] = useState("sans-serif");
   const [fontSize, setFontSize] = useState(24);
   const [textColor, setTextColor] = useState("#000000");
