@@ -25,9 +25,8 @@ const ITEMS_TO_SHOW = Math.ceil(COLUMN_HEIGHT / ITEM_HEIGHT) + 1; // Number of i
 
 // Helper function for random size generation
 const getRandomSize = () => {
-    // const randomWidth = Math.floor(Math.random() * (200 - 100 + 1)) + 300; // random width between 100 and 200px
     const randomHeight = Math.floor(Math.random() * (200 - 100 + 1)) + 300; // random height between 100 and 200px
-    return {  height: randomHeight };
+    return { height: randomHeight };
 };
 
 export default function QuoteGrid() {
@@ -43,19 +42,19 @@ export default function QuoteGrid() {
     useEffect(() => {
         if (newQuotes) {
             setQuotes((prevQuotes) => [
-                ...prevQuotes.slice(newQuotes.length), // Remove old quotes from the bottom
+                ...prevQuotes.slice(newQuotes.length),
                 ...newQuotes,
             ]);
         }
     }, [newQuotes]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            refetch(); // Fetch new quotes periodically
-        }, 10000); // Adjust as needed
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         refetch(); // Fetch new quotes periodically
+    //     }, 10000); // Adjust as needed
 
-        return () => clearInterval(interval);
-    }, [refetch]);
+    //     return () => clearInterval(interval);
+    // }, [refetch]);
 
     useEffect(() => {
         const newColumns = [[], [], [], []];
@@ -90,7 +89,6 @@ export default function QuoteGrid() {
 
     return (
         <div className="min-h-screen bg-gray-100 relative">
-            {/* Fixed Header and Button */}
             <header className="fixed top-0 left-0 right-0 bg-gray-800 text-white p-4 z-10">
                 <h1 className="text-2xl font-bold">Quote Grid</h1>
             </header>
@@ -98,19 +96,20 @@ export default function QuoteGrid() {
                 <button onClick={refetch}>Refresh Quotes</button>
             </div>
 
-            {/* Grid of 4 columns with infinite scrolling animation */}
             <div className="pt-24 ml-40 mr-40 grid grid-cols-4 gap-4 p-4 relative overflow-hidden h-[700px]">
                 {columns.map((columnQuotes, columnIndex) => (
                     <div
-                        key={columnIndex} // Unique key for each column
+                        key={columnIndex}
                         className="relative w-full overflow-hidden"
                         style={{ height: `${COLUMN_HEIGHT}px` }}
                     >
                         <motion.div
                             className="flex flex-col items-center justify-center content-center space-y-4"
-                            // initial={{ y: columnIndex % 2 === 0 ? ['0%'] : [ '0%'] }} 
+                            initial={{
+                                y: columnIndex % 2 === 0 ? '0%' : '150%', // Even columns from top, odd from bottom
+                            }}
                             animate={{
-                                y: columnIndex % 2 === 0 ? ['-50%', '0%'] : ['0%', '-50%'],
+                                y: columnIndex % 2 === 0 ? ['-100%',  '10%'] : ['40%', '-100%'], // Continuous sliding
                             }}
                             transition={{
                                 duration: 30, // Adjust duration for smoothness
@@ -118,7 +117,6 @@ export default function QuoteGrid() {
                                 ease: 'linear',
                             }}
                         >
-                            {/* Ensure that we always have enough items in the column to fill the height */}
                             {columnQuotes.length < ITEMS_TO_SHOW &&
                                 [...Array(ITEMS_TO_SHOW).keys()].map((_, idx) => (
                                     <div
