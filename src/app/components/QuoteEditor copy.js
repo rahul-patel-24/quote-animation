@@ -1,5 +1,4 @@
-"use client"; // Enable client-side rendering in Next.js 
-
+"use client"; // Enable client-side rendering in Next.js
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import dynamic from 'next/dynamic';
-import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
 import 'react-quill/dist/quill.snow.css';
 import Image from 'next/image';
 
@@ -41,12 +40,8 @@ export default function QuoteMaker() {
   const handleDownload = () => {
     const previewElement = document.getElementById('quote-preview');
     if (previewElement) {
-      html2canvas(previewElement).then((canvas) => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = 'quote-image.png';
-        link.click();
-      });
+      // Convert the preview element to an image and download
+      saveAs(previewElement, 'quote-image.png');
     }
   };
 
@@ -128,6 +123,14 @@ export default function QuoteMaker() {
         </div>
       ) : (
         <div>
+          {/* <Input
+            placeholder="Enter your quote"
+            value={quote}
+            onChange={(e) => setQuote(e.target.value)}
+            maxLength={150}
+            className="my-2"
+          /> */}
+
           <ReactQuill
             value={quoteStyle}
             onChange={setQuoteStyle}
@@ -159,10 +162,10 @@ export default function QuoteMaker() {
               <Button>Choose Background</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setBackground({ type: 'color', value: background.value })}>Background Color</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setBackground({ type: 'gradient', value: background.value })}>Gradient</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setBackground({ type: 'image', value: '' })}>Background Image</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setBackground({ type: 'pattern', value: background.value })}>Pattern</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setBackground({ ...background, type: 'color' })}>Background Color</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setBackground({ ...background, type: 'gradient' })}>Gradient</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setBackground({ ...background, type: 'image' })}>Background Image</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setBackground({ ...background, type: 'pattern' })}>Pattern</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -174,42 +177,11 @@ export default function QuoteMaker() {
             />
           )}
 
-          {background.type === 'gradient' && (
-            <Input
-              type="text"
-              placeholder="Enter gradient CSS"
-              onChange={(e) => setBackground({ ...background, value: e.target.value })}
-              className="mt-2"
-            />
-          )}
-
-          {background.type === 'pattern' && (
-            <Input
-              type="text"
-              placeholder="Enter pattern URL"
-              onChange={(e) => setBackground({ ...background, value: `url(${e.target.value})` })}
-              className="mt-2"
-            />
-          )}
-
-          {background.type === 'image' && (
-            <label className="block my-4">
-              <span className="sr-only">Upload Background Image</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-              />
-            </label>
-          )}
-
           <div className="my-2">
             <Input
               type="checkbox"
               checked={border}
               onChange={() => setBorder(!border)}
-              className="mr-2"
             />
             Add Border
           </div>
@@ -228,12 +200,12 @@ export default function QuoteMaker() {
       )}
 
       {/* Live Preview */}
-      {option === 'upload' ? '' : (
-        <div id="quote-preview" className="my-4 p-4" style={{ background: background.value, border: border ? '2px solid black' : 'none' }}>
-          <h1 className="text-xl font-bold" dangerouslySetInnerHTML={{ __html: quoteStyle }} />
-          <p>{description}</p>
-        </div>
-      )}
+      {option === 'upload' ? '' : <div id="quote-preview" className="my-4 p-4" style={{ background: background.value, border: border ? '2px solid black' : 'none' }}>
+        <h1 className="text-xl font-bold">{quote}</h1>
+        <p>{description}</p>
+        <div dangerouslySetInnerHTML={{ __html: quoteStyle }} />
+      </div>
+      }
 
       <Button onClick={handleDownload} className="my-4">Download</Button>
     </div>
