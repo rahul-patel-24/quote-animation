@@ -4,12 +4,8 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator"
+
 import {
   Select,
   SelectContent,
@@ -23,6 +19,8 @@ import html2canvas from 'html2canvas';
 import 'react-quill/dist/quill.snow.css';
 import Image from 'next/image';
 import { HexColorPicker } from "react-colorful"; // For color picker library
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -30,7 +28,7 @@ export default function QuoteMaker() {
   const [option, setOption] = useState('create');
   const [description, setDescription] = useState('');
   const [background, setBackground] = useState({ type: 'color', value: '#ffffff' });
-  const [border, setBorder] = useState(false);
+  const [border, setBorder] = useState(true);
   const [image, setImage] = useState(null);
   const [quoteStyle, setQuoteStyle] = useState('');
   const [tags, setTags] = useState([]);
@@ -38,11 +36,13 @@ export default function QuoteMaker() {
 
   // List of preset patterns
   const presetPatterns = [
-    'url(/pattern1.png)',
-    'url(/pattern2.png)',
-    'url(/pattern3.png)',
-    'url(/pattern4.png)'
+    'https://img.freepik.com/free-photo/push-pins-connected-linear-network-background_53876-31254.jpg?w=826&t=st=1726830762~exp=1726831362~hmac=7ff11d0068417c375168fa9e2e4d3d154464068462fe25c1afc4f02fe9718b41',
+    'https://img.freepik.com/free-vector/network-connections-background-with-connecting-lines-dots_1048-12244.jpg?w=1380&t=st=1726830810~exp=1726831410~hmac=2dc50ded1675345ee5bc8292a7ddb3c4becfc3ce8a3addc18c91dfe4988d0b2f',
+    'https://img.freepik.com/free-vector/colourful-watercolour-texture_1048-11773.jpg?w=900&t=st=1726830826~exp=1726831426~hmac=196c9685e14c508c6028897495e76cffff00f872be5d9a0606b3564506c777d2',
+    'https://img.freepik.com/free-vector/grunge-border_1048-7373.jpg?w=360&t=st=1726830846~exp=1726831446~hmac=a592a32bb295f22b8ce08ab0f53dd9a71bd0c88da0f7768d5a6312ac3913d007'
   ];
+
+
 
   // Handlers
   const handleImageUpload = (e) => {
@@ -74,6 +74,10 @@ export default function QuoteMaker() {
       setTags([...tags, e.target.value]);
       e.target.value = '';
     }
+  };
+
+  const handleTagRemove = (index) => {
+    setTags(tags.filter((_, idx) => idx !== index));
   };
 
   const applyPresetTemplate = (template) => {
@@ -161,9 +165,19 @@ export default function QuoteMaker() {
               onKeyDown={handleTagAdd}
               className="my-2"
             />
+
             <div className="flex flex-wrap gap-2 my-2">
               {tags.map((tag, idx) => (
-                <span key={idx} className="px-2 py-1 bg-gray-200 rounded-full">{tag}</span>
+                <span key={idx} className="px-2 py-1 bg-gray-200 rounded-full flex items-center">
+                  {tag}
+                  <button
+                    className="ml-2 text-red-500 hover:text-red-700"
+                    onClick={() => handleTagRemove(idx)}
+                    aria-label={`Remove tag ${tag}`}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </span>
               ))}
             </div>
             {image && (
@@ -201,9 +215,19 @@ export default function QuoteMaker() {
               onKeyDown={handleTagAdd}
               className="my-2"
             />
+
             <div className="flex flex-wrap gap-2 my-2">
               {tags.map((tag, idx) => (
-                <span key={idx} className="px-2 py-1 bg-gray-200 rounded-full">{tag}</span>
+                <span key={idx} className="px-2 py-1 bg-gray-200 rounded-full flex items-center">
+                  {tag}
+                  <button
+                    className="ml-2 text-red-500 hover:text-red-700"
+                    onClick={() => handleTagRemove(idx)}
+                    aria-label={`Remove tag ${tag}`}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </span>
               ))}
             </div>
 
@@ -216,8 +240,9 @@ export default function QuoteMaker() {
                 onChange={() => setBorder(!border)}
               />
             </div>
+            <Separator />
 
-            <div>
+            <div className='mt-5'>
               <Select onValueChange={(value) => handleBackgroundChange(value)}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Choose Background" />
@@ -277,14 +302,16 @@ export default function QuoteMaker() {
             {background.type === 'pattern' && (
               <div className="mt-4">
                 <h2 className="text-sm font-semibold">Select a Pattern</h2>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-4 gap-4 mt-2">
                   {presetPatterns.map((pattern, idx) => (
                     <div
                       key={idx}
-                      className="w-10 h-10 border cursor-pointer"
-                      style={{ backgroundImage: pattern }}
-                      onClick={() => setBackground({ type: 'pattern', value: pattern })}
-                    />
+                      className="relative w-full h-24 border rounded-md overflow-hidden cursor-pointer"
+                      onClick={() => setBackground({ type: 'pattern', value: `url(${pattern})` })}
+                    >
+                      <img src={pattern} alt={`Pattern ${idx + 1}`} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black opacity-0 hover:opacity-25 transition-opacity"></div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -292,7 +319,7 @@ export default function QuoteMaker() {
 
             <div className='mt-5'>
               <Select onValueChange={(value) => applyPresetTemplate(value)}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Choose Preset Template" />
                 </SelectTrigger>
                 <SelectContent>
@@ -307,26 +334,28 @@ export default function QuoteMaker() {
       </div>
 
       {/* Right Side: Preview */}
-      <div className="w-1/2 h-1/3 p-4">
-        {option === 'upload' ? (
-          <div>
-            {image && (
-              <div
-                id="quote-preview"
-                className="w-full h-full p-4"
-                style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover' }}
-              >
-                <p>{description}</p>
-              </div>
-            )}
-          </div>
+      <div className="w-1/2 h-1/3  p-4">
+        {option === 'upload' ? (''
+          // <div className='h-auto w-auto'>
+          //   {image && (
+          //     <div
+          //       id="quote-preview"
+          //       className="w-full h-full p-4"
+          //       style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover' }}
+          //     >
+          //       <p>{description}</p>
+          //     </div>
+          //   )}
+          // </div>
         ) : (
           <div
             id="quote-preview"
             className="w-full h-full p-4"
             style={{
-              backgroundImage: background.type === 'image' ? `url(${background.value})` : background.type === 'pattern' ? background.value : '',
-              background: background.type === 'color' ? background.value : background.type === 'gradient' ? background.value : '',
+              ...(background.type === "image" && { backgroundImage: `url(${background.value})`, backgroundSize: "cover" }),
+              ...(background.type === "pattern" && { backgroundImage: background.value }),
+              ...(background.type === "color" && { backgroundColor: background.value }),
+              ...(background.type === "gradient" && { background: background.value }),
               border: border ? '2px solid black' : 'none'
             }}
           >
@@ -334,7 +363,7 @@ export default function QuoteMaker() {
             <p>{description}</p>
           </div>
         )}
-        {quoteStyle && description && ( // Check if the quote and description are defined
+        {option !== 'upload' && quoteStyle && description && ( // Check if the quote and description are defined
           <Button onClick={handleDownload} className="my-4">Download</Button>
         )}
       </div>
