@@ -32,6 +32,7 @@ export default function QuoteMaker() {
   const [image, setImage] = useState(null);
   const [quoteStyle, setQuoteStyle] = useState('');
   const [tags, setTags] = useState([]);
+  const [textColor, setTextColor] = useState('#000000'); // New state for text color
   const [gradient, setGradient] = useState({ color1: '#ff0000', color2: '#0000ff', direction: 'to right' });
 
   // List of preset patterns
@@ -108,6 +109,12 @@ export default function QuoteMaker() {
       type: 'gradient',
       value: `linear-gradient(${direction}, ${color1}, ${color2})`
     });
+  };
+
+  const handleTextColorChange = (e) => {
+    const color = e.target.value;
+    setTextColor(color);
+    setQuoteStyle(`<h1 style="color:${color};font-size:24px;">${quoteStyle}</h1>`); // Update quote style with text color
   };
 
   const handleBackgroundChange = (value) => {
@@ -202,6 +209,17 @@ export default function QuoteMaker() {
               className="my-4"
               placeholder="Customize your quote (bold, font, size, color)"
             />
+             {/* Text Color Picker */}
+             <div className="flex align-middle mt-5">
+              <label className='font-bold'>Text Color</label>
+              <input
+                type="color"
+                value={textColor}
+                onChange={handleTextColorChange}
+                className="ml-2"
+              />
+            </div>
+
             <Textarea
               placeholder="Add a description"
               value={description}
@@ -244,7 +262,7 @@ export default function QuoteMaker() {
 
             <div className='mt-5'>
               <Select onValueChange={(value) => handleBackgroundChange(value)}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Choose Background" />
                 </SelectTrigger>
                 <SelectContent>
@@ -349,19 +367,19 @@ export default function QuoteMaker() {
           // </div>
         ) : (
           <div
-            id="quote-preview"
-            className="w-full h-full p-4"
-            style={{
-              ...(background.type === "image" && { backgroundImage: `url(${background.value})`, backgroundSize: "cover" }),
-              ...(background.type === "pattern" && { backgroundImage: background.value }),
-              ...(background.type === "color" && { backgroundColor: background.value }),
-              ...(background.type === "gradient" && { background: background.value }),
-              border: border ? '2px solid black' : 'none'
-            }}
-          >
-            <h1 className="text-xl font-bold" dangerouslySetInnerHTML={{ __html: quoteStyle }} />
-            <p>{description}</p>
-          </div>
+          id="quote-preview"
+          className="w-full h-full p-4"
+          style={{
+            ...(background.type === "image" && { backgroundImage: `url(${background.value})`, backgroundSize: "cover" }),
+            ...(background.type === "pattern" && { backgroundImage: background.value, backgroundSize: "cover" }), // Ensure this is set
+            ...(background.type === "color" && { backgroundColor: background.value }),
+            ...(background.type === "gradient" && { background: background.value }),
+            border: border ? '2px solid black' : 'none'
+          }}
+        >
+          <h1 className="text-xl font-bold" style={{ color: textColor }} dangerouslySetInnerHTML={{ __html: quoteStyle }} />
+          <p>{description}</p>
+        </div>
         )}
         {option !== 'upload' && quoteStyle && description && ( // Check if the quote and description are defined
           <Button onClick={handleDownload} className="my-4">Download</Button>
