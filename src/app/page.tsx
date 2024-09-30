@@ -1,4 +1,4 @@
-import QuoteGrid from './components/QuoteGrid';
+import QuoteGrid from './components/quote-grid/QuoteGrid'
 // import QuoteEditor from './components/QuoteEditor'
 
 export default function Home() {
